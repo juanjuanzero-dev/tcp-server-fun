@@ -125,13 +125,14 @@ func main() {
 
 ## Do something else with the data
 
-[x] Change the code so that we do something with the data, i.e. save to a log file for incomming messages.
+- [x] Change the code so that we do something with the data, i.e. save to a log file for incomming messages.
 
 - I learned more about the file system here, in creating files from scratch. It was nice and as it was simple. os.Create creates or truncates the file, where as, os.OpenFile can open a file or create it if it does not exist.
 
 - I also learned about the numeric notation of on the file system. and `0666` means to have read and write permissions on the file as the file mode. In with the pipe characters is a flag that the file gets opened with. First is the O_APPEND flag to append to an existing file, if that is unsuccessful we use the O_CREATE flag to write to the file.
 
 Here is the server code that takes in the files.
+
 ```go
 
 // writes to a file, but updates the file everytime
@@ -164,18 +165,37 @@ func writeLogV2(message []byte) {
 }
 ```
 
-[] Add a param in the client code that takes in a flag for the client name, this will also get logged.
+- [x] Add a param in the client code that takes in a flag for the client name, this will also get logged.
+
 - to implement this we'll need to pass in flags using the `flag` package in the standard library
 
-[] make the file name of the file a param so you can have separate logs for each client.
+- This took me a while to learn, mainly because im an junior trying to get better, its part of the journey eh? So I added code to create a flag. That gets parsed, Here is the code:
 
+```go
+	var clientName string
+	flag.StringVar(&clientName, "client", "Juan", "name of the calling client") // wire up the flag
+	flag.Parse() // Parse all flags
+	fmt.Println(clientName) // print it out, for checking
+```
 
+What this does is very simple, it creats a string variable `clientName`, then we map the pointer to that so the value of the incomming flag called `client`, which defaults to `Juan` is the name of the calling client. Now all we have to do is, where the clientName will be `zero`:
+
+```shell
+go run client.go -client zero
+```
+
+- [x] make the file name of the file a param so you can have separate logs for each client.
+
+- To implement this i'd like to add some structure to what is going on, so im electing to encode the message in a better way. This the server doesn't have to guess. Let's use JSON. The client will send JSON message and the server will pass it.
+- we create a new struct call message that will house the clientName, and the message. Make sure to export the values and add struct tags (perhaps not needed) but was useful in realizing that the properties needed to be exported, what was happening before was we were sending out empty objects after Marshalling to JSON. Likely because it was not exported.
+- on the server side we Unmarshall that JSON, and make our own files using the client name, we used the filepath package in the standard library to work with file paths. Also i got gopls to work in nvim
 
 ## Evolving to Handle Multiple Concurrent TCP Connections
 
 - Change so that we are handling multiple concurrent TCP connections, implement a connection pool, and timeouts
 
 ## Evolving to Handle Errors and Handle Graceful Shutdown
+
 - add a gracefull shut down
 
 ## Security, Implement Secure Connections
