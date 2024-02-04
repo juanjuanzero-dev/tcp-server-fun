@@ -31,12 +31,19 @@ func main() {
 		ClientName: clientName,
 		Message:    fmt.Sprintf("Hey there server! this is %v", clientName),
 	}
-	fmt.Println(msg)
 
-	data, err := json.Marshal(msg) // convert to JSON
+	for i := 0; i < 100; i++ {
+	
+		data, err := json.Marshal(msg) // convert to JSON
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
 	_, err = conn.Write(data)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
+	}
+
 	}
 }
