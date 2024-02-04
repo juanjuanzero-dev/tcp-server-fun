@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 	"os"
+	"path/filepath"
+	"time"
 )
 
 func main() {
@@ -65,12 +68,19 @@ func writeLog(message []byte) {
 
 // writes to a file, but does not truncate, appends if it already exists.
 func writeLogV2(message []byte) {
-	logFile, err := os.OpenFile("logfile.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	var fromClient struct {
+		ClientName string
+		Message    string
+	}
+	err := json.Unmarshal(message, &fromClient)
+
+	filename, err := filepath.Abs(fmt.Sprintf("./logs/%s.logs.txt", fromClient.ClientName))
+	logFile, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 
-	bytesWritten, err := logFile.Write(message)
+	bytesWritten, err := logFile.Write([]byte(fmt.Sprintf("%s: %s\n", time.Now().Format(time.RFC3339), fromClient.Message)))
 	if err != nil {
 		fmt.Println("error:", err)
 	}
