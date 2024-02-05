@@ -74,7 +74,15 @@ func writeLogV2(message []byte) {
 	}
 	err := json.Unmarshal(message, &fromClient)
 
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
 	filename, err := filepath.Abs(fmt.Sprintf("./logs/%s.logs.txt", fromClient.ClientName))
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
 	logFile, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		fmt.Println("error:", err)

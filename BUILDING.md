@@ -191,8 +191,12 @@ go run client.go -client zero
 - on the server side we Unmarshall that JSON, and make our own files using the client name, we used the filepath package in the standard library to work with file paths. Also i got gopls to work in nvim
 
 ## Evolving to Handle Multiple Concurrent TCP Connections
+- [] Change so that we are handling multiple concurrent TCP connections, implement a connection pool, and timeouts
+- To make this work we are going need up update the client code to update continuously. We are going write a loop that makes a log everytime, each client will write its own, and each client will write to their own file.
+- Facing a few challenges, im using tmux to manage a few things
+	- How to get golang formatter LSP nvim? So i took a look at the init.lua file in nvim and it turns out there are a few things that were turned off. Perhaps i need to take a look at that, when i get a chance. Anyways, i eventually found the spot where an autoformatter was added and all i needed to do is uncomment that. Worked on save. nice. 
+	- I wrote a loop in the client code to send 100 messages, what happened was the server eventually started truncating messages, likely because it encountered a full buffer (1024 bytes), then when it tried to parse the next packet from the connection. It blew up because it got a bad thing.
 
-- Change so that we are handling multiple concurrent TCP connections, implement a connection pool, and timeouts
 
 ## Evolving to Handle Errors and Handle Graceful Shutdown
 

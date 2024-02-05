@@ -33,17 +33,17 @@ func main() {
 	}
 
 	for i := 0; i < 100; i++ {
-	
+
 		data, err := json.Marshal(msg) // convert to JSON
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	_, err = conn.Write(data)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		_, err = conn.Write(data)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
 
 	}
 }
