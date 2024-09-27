@@ -94,4 +94,5 @@ func writeLogV2(message []byte) {
 	}
 	fmt.Println("Bytes:", bytesWritten)
 	logFile.Close()
+	// something comment
 }
